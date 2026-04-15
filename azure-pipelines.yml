@@ -1,0 +1,61 @@
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - tests/Users.spec.ts
+      - tests/login.ts
+      - tests/testdata.ts
+      - playwright.config.ts
+      - package.json
+      - package-lock.json
+      - azure-pipelines.yml
+
+pr:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - tests/Users.spec.ts
+      - tests/login.ts
+      - tests/testdata.ts
+      - playwright.config.ts
+      - package.json
+      - package-lock.json
+      - azure-pipelines.yml
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+  - task: NodeTool@0
+    displayName: Use Node.js 20
+    inputs:
+      versionSpec: "20.x"
+
+  - script: npm ci
+    displayName: Install dependencies
+
+  - script: npx playwright install --with-deps chromium
+    displayName: Install Playwright browsers
+
+  - script: npm run test:users
+    displayName: Run Users.spec.ts
+
+  - task: PublishPipelineArtifact@1
+    displayName: Publish Playwright report
+    condition: always()
+    inputs:
+      targetPath: playwright-report
+      artifact: playwright-report-users-spec
+      publishLocation: pipeline
+
+  - task: PublishPipelineArtifact@1
+    displayName: Publish test results
+    condition: always()
+    inputs:
+      targetPath: test-results
+      artifact: test-results-users-spec
+      publishLocation: pipeline

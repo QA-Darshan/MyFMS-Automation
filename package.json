@@ -1,0 +1,24 @@
+{
+  "name": "automation",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test:users": "playwright test tests/Users.spec.ts --project=chromium",
+    "test:contacts": "playwright test tests/Contacts.spec.ts --project=chromium",
+    "test:contacts:flow": "playwright test tests/Contacts.spec.ts --project=chromium",
+    "test:devices": "playwright test tests/Devices.spec.ts --project=chromium"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@playwright/test": "^1.57.0",
+    "@types/node": "^25.5.2"
+  },
+  "dependencies": {
+    "@faker-js/faker": "^10.3.0",
+    "dotenv": "^17.2.3"
+  }
+}

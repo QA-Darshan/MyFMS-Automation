@@ -1,0 +1,62 @@
+name: Users Spec Pipeline
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "tests/Users.spec.ts"
+      - "tests/login.ts"
+      - "tests/testdata.ts"
+      - "playwright.config.ts"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/users-spec.yml"
+  pull_request:
+    paths:
+      - "tests/Users.spec.ts"
+      - "tests/login.ts"
+      - "tests/testdata.ts"
+      - "playwright.config.ts"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/users-spec.yml"
+
+jobs:
+  run-users-spec:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout
+      uses: actions/checkout@v4
+
+      - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        cache: npm
+
+      - name: Install dependencies
+      run: npm ci
+
+      - name: Install Playwright browsers
+      run: npx playwright install --with-deps chromium
+
+      - name: Run Users spec
+      run: npm run test:users
+
+      - name: Upload Playwright report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: playwright-report-users-spec
+        path: playwright-report/
+        if-no-files-found: ignore
+
+      - name: Upload test results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-results-users-spec
+        path: test-results/
+        if-no-files-found: ignore
