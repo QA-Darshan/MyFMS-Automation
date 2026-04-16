@@ -7,7 +7,8 @@ export function generateUserName() {
     lastName: faker.person.lastName(),
     email: `${faker.person.firstName()}.${faker.person.lastName()}@test.com`.toLowerCase(),
     employeeNumber: `EMP${Math.floor(Math.random() * 1000000)}`,
-    phoneNumber: Math.floor(1000000000 + Math.random() * 9000000000).toString()
+    phoneNumber: Math.floor(1000000000 + Math.random() * 9000000000).toString(),
+    billingcode: `Billingcode${Math.floor(Math.random() * 1000000)}`,
   };
 }
 
@@ -37,4 +38,27 @@ export function generateAlphaString(length = 10) {
     result += chars[Math.floor(Math.random() * chars.length)];
   }
   return result;
+}
+
+export function buildTestDataTable(data: Record<string, string>): string {
+  const headers = ['Field', 'Value'];
+  const rows = Object.entries(data);
+
+  const fieldWidth = Math.max(...rows.map(r => r[0].length), 'Field'.length);
+  const valueWidth = Math.max(...rows.map(r => r[1].length), 'Value'.length);
+
+  const border = `+${'-'.repeat(fieldWidth + 2)}+${'-'.repeat(valueWidth + 2)}+`;
+
+  const lines = [
+    'Generated Test Data',
+    border,
+    `| ${'Field'.padEnd(fieldWidth)} | ${'Value'.padEnd(valueWidth)} |`,
+    border,
+    ...rows.map(([k, v]) =>
+      `| ${k.padEnd(fieldWidth)} | ${v.padEnd(valueWidth)} |`
+    ),
+    border
+  ];
+
+  return lines.join('\n');
 }
