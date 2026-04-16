@@ -43,9 +43,11 @@ test('test', async ({ page }) => {
   await page.getByRole('button', { name: 'add Assign asset' }).click();
   await expect(page.getByRole('complementary', { name: 'Assign Asset' })).toBeVisible();
 
-  await page.getByText('Select asset').click();
+  await page.locator('#efw0MEnUu0 > .rz-dropdown-trigger > .rz-dropdown-trigger-icon').click();
   await expect(page.getByRole('textbox', { name: 'Search' })).toBeVisible();
 
+  await page.getByRole('option', { name: 'Description' }).nth(3).click();
+  
   await page.getByRole('option', { name: 'Description' }).nth(3).click();
   await page.getByRole('button', { name: 'Save' }).click();
   await expect(page.getByRole('row', { name: 'Description AA-00-07 16-04-' })).toBeVisible();
