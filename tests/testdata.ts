@@ -19,7 +19,8 @@ export function generateAddress() {
     number: Math.floor(Math.random() * 200) + 1,
     postalCode: Math.floor(100000 + Math.random() * 900000).toString(),
     city: 'Ahmedabad',
-    country: `India`
+    country: `India`,
+    Postalcode: `382330`
   };
 }
 
@@ -50,7 +51,28 @@ export function buildTestDataTable(data: Record<string, string>): string {
   const border = `+${'-'.repeat(fieldWidth + 2)}+${'-'.repeat(valueWidth + 2)}+`;
 
   const lines = [
-    'Generated Test Data',
+    border,
+    `| ${'Field'.padEnd(fieldWidth)} | ${'Value'.padEnd(valueWidth)} |`,
+    border,
+    ...rows.map(([k, v]) =>
+      `| ${k.padEnd(fieldWidth)} | ${v.padEnd(valueWidth)} |`
+    ),
+    border
+  ];
+
+  return lines.join('\n');
+}
+
+export function buildTestDataTable1(data: Record<string, string>): string {
+  const headers = ['Field', 'Value'];
+  const rows = Object.entries(data);
+
+  const fieldWidth = Math.max(...rows.map(r => r[0].length), 'Field'.length);
+  const valueWidth = Math.max(...rows.map(r => r[1].length), 'Value'.length);
+
+  const border = `+${'-'.repeat(fieldWidth + 2)}+${'-'.repeat(valueWidth + 2)}+`;
+
+  const lines = [
     border,
     `| ${'Field'.padEnd(fieldWidth)} | ${'Value'.padEnd(valueWidth)} |`,
     border,
