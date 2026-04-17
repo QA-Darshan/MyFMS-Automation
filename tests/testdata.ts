@@ -84,3 +84,12 @@ export function buildTestDataTable1(data: Record<string, string>): string {
 
   return lines.join('\n');
 }
+
+// helpers/notification.helper.ts
+
+export const generateFormData = () => ({
+  description: faker.lorem.sentence(),
+  email: `${faker.person.firstName()}.${faker.person.lastName()}@test.com`.toLowerCase(),
+  subject: faker.lorem.words(3),
+  message: faker.lorem.paragraph(),
+});
