@@ -109,5 +109,4 @@ console.log(buildTestDataTable(editClientData));
 
   await page.getByRole('button', { name: 'Impersonate' }).click();
   await expect(page.getByRole('complementary', { name: 'Impersonate' })).toBeVisible();
-//
 });
