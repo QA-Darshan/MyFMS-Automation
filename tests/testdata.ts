@@ -92,5 +92,8 @@ export const generateFormData = () => ({
   email: `${faker.person.firstName()}.${faker.person.lastName()}@test.com`.toLowerCase(),
   subject: faker.lorem.words(3),
   message: faker.lorem.paragraph(),
-  url: faker.internet.url()
+  url: faker.internet.url(),
+  title: faker.lorem.words(3)
+
 });
+

@@ -105,7 +105,7 @@ async function expectSuccessMessage(page: Page, action: string, messagePattern: 
   return message || 'Success notification visible';
 }
 
-test('Add Contact', async ({ page }) => {
+test('Contact management', async ({ page }) => {
   const user = generateUserName();
   const address = generateAddress();
   const user1 = generateUserName();
