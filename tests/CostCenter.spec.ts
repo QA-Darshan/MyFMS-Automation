@@ -738,6 +738,7 @@ test('Cost Center full flow: add/edit group, add/edit/delete cost center, delete
   } else {
     console.log(`Edited cost center not found by name after save (${editedCostCenter.name}); continuing to delete flow.`);
   }
+  await setDisplayInactiveCostCenters(page, false);
 
   await deleteCostCenter(page, editedCostCenter.name);
   console.log(formatCostCenterResult('COST CENTER DELETED', editedCostCenter));

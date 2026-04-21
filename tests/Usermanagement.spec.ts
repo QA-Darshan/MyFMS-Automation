@@ -207,6 +207,18 @@ async function waitForFirstVisible(candidates: Locator[], timeoutMs = DEFAULT_WA
   return null;
 }
 
+async function openAdminMenuFromAssetsLanding(page: Page): Promise<void> {
+  await waitForFirstVisible([
+    page.getByRole('button', { name: /search assets/i }),
+    page.getByRole('link', { name: /assets/i }),
+    page.getByText(/\bassets\b/i),
+    page.locator('a[href*="/assets"], a[href*="/asset"]').first(),
+  ], 20_000);
+
+  await page.getByText('Admin').click();
+  await expect(page.getByRole('listitem', { name: 'Journeys', exact: true })).toBeVisible();
+}
+
 async function firstVisibleOption(
   candidates: Locator[],
   excludedText?: string,
@@ -357,8 +369,7 @@ test('User Management', async ({ page }, testInfo) => {
 
   await login(page);  
   await page.waitForTimeout(18000);
-  await page.getByText('Admin').click();
-  await expect(page.getByRole('listitem', { name: 'Journeys', exact: true })).toBeVisible();
+  await openAdminMenuFromAssetsLanding(page);
 
   await page.getByRole('link', { name: 'account_circle Users' }).click();
 
@@ -518,8 +529,7 @@ test('User Management', async ({ page }, testInfo) => {
 test('Users page smoke', async ({ page }, testInfo) => {
   await login(page);
   await page.waitForTimeout(10000);
-  await page.getByText('Admin').click();
-  await expect(page.getByRole('listitem', { name: 'Journeys', exact: true })).toBeVisible();
+  await openAdminMenuFromAssetsLanding(page);
 
   await page.getByRole('link', { name: 'account_circle Users' }).click();
 
