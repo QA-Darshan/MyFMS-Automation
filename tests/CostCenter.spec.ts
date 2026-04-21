@@ -590,15 +590,6 @@ async function deleteCostCenter(page: Page, name: string): Promise<void> {
     page.getByRole('listitem', { name: new RegExp(escapeRegex(name), 'i') }),
   ], 20_000);
   if (!row) {
-    await setDisplayInactiveCostCenters(page, true);
-    await searchCostCenter(page, name);
-    row = await waitForFirstVisible([
-      page.getByRole('row', { name: new RegExp(escapeRegex(name), 'i') }),
-      page.locator('tr', { hasText: new RegExp(escapeRegex(name), 'i') }),
-      page.getByRole('listitem', { name: new RegExp(escapeRegex(name), 'i') }),
-    ], 20_000);
-  }
-  if (!row) {
     await searchCostCenter(page, '');
     row = await waitForFirstVisible([
       page.getByRole('row').filter({ has: page.getByRole('button', { name: /delete/i }) }).first(),
@@ -743,6 +734,7 @@ test('Cost Center full flow: add/edit group, add/edit/delete cost center, delete
   await deleteCostCenter(page, editedCostCenter.name);
   console.log(formatCostCenterResult('COST CENTER DELETED', editedCostCenter));
 
+  // Deleted cost centers are validated only after switching to the inactive view.
   await setDisplayInactiveCostCenters(page, true);
   await searchCostCenter(page, editedCostCenter.name);
   let inactiveRow = await waitForFirstVisible([

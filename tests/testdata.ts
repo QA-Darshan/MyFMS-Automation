@@ -94,6 +94,34 @@ export const generateFormData = () => ({
   message: faker.lorem.paragraph(),
   url: faker.internet.url(),
   title: faker.lorem.words(3)
-
 });
 
+export function generateTestData() {
+  const randomDigits = (length: number): string =>
+    Array.from({ length }, () => Math.floor(Math.random() * 10)).join('');
+
+  const phoneNumber = '9' + faker.string.numeric(9);
+
+  const username = faker.string.alphanumeric(6);
+
+  const password = `Pass@${faker.string.alphanumeric(4)}${faker.string.numeric(2)}`;
+
+  return {
+    randomDigits,
+    phoneNumber,
+    username,
+    password,
+  };
+}
+
+export const generateSimNumber = (): string => {
+  let b = '31' + Array.from({ length: 9 }, () => Math.floor(Math.random() * 10)).join(''), s = 0, d = 1;
+  for (let i = b.length - 1; i >= 0; i--) { let n = +b[i]; if (d) { n *= 2; if (n > 9) n -= 9; } s += n; d ^= 1; }
+  return b + ((10 - s % 10) % 10);
+};
+
+export const generateIMEI = (): string => {
+  let b = Array.from({ length: 14 }, () => Math.floor(Math.random() * 10)).join(''), s = 0, d = 1;
+  for (let i = b.length - 1; i >= 0; i--) { let n = +b[i]; if (d) { n *= 2; if (n > 9) n -= 9; } s += n; d ^= 1; }
+  return b + ((10 - s % 10) % 10);
+};
