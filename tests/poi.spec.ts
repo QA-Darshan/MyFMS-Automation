@@ -6,6 +6,7 @@ test('test', async ({ page }) => {
  const poi = generatePOIGroupData();
  const poi1 = generatePOIGroupData();
  const poi11 = generatePOIData();
+ const Updatepoi = generatePOIData();
  await login(page);
   await page.waitForTimeout(8000);
   await page.getByText('Admin').click();
@@ -100,5 +101,44 @@ await page.waitForTimeout(5000);
     Lattitude: poi11.latitude,
     Longitude: poi11.longitude
   }
-]); 
+]);
+
+  // Edit POI
+  await page.getByRole('textbox', { name: 'Search...' }).click();
+  await page.getByRole('textbox', { name: 'Search...' }).fill(poi11.name);
+//  await expect(page.getByRole('row', { name: poi11.name })).toBeVisible();
+
+  await page.getByText(poi11.name).click();
+  await expect(page.getByRole('complementary', { name: 'Edit POI' })).toBeVisible();
+
+  await page.getByRole('textbox', { name: 'Name' }).click();
+  await page.locator('.rz-data-grid-data').press('ControlOrMeta+a');
+  await page.getByRole('textbox', { name: 'Name' }).fill(Updatepoi.name);
+  await page.getByRole('textbox', { name: 'Address' }).click();
+  await page.getByRole('textbox', { name: 'Address' }).press('ControlOrMeta+a');
+  await page.getByRole('textbox', { name: 'Address' }).fill(Updatepoi.address);
+  await page.getByRole('textbox', { name: 'Third-party ID' }).click();
+  await page.getByRole('textbox', { name: 'Address' }).press('ControlOrMeta+a');
+  await page.getByRole('textbox', { name: 'Third-party ID' }).fill(Updatepoi.thirdPartyId);
+  await page.getByRole('button', { name: 'refresh' }).click();
+//  await expect(page.getByRole('textbox', { name: 'Radius' })).toBeVisible();
+
+  await page.getByRole('textbox', { name: 'Lattitude' }).click();
+  await page.getByRole('textbox', { name: 'Lattitude' }).press('ControlOrMeta+a');
+  await page.getByRole('textbox', { name: 'Lattitude' }).fill(Updatepoi.latitude);
+  await page.getByRole('textbox', { name: 'Longitude' }).click();
+  await page.getByRole('textbox', { name: 'Longitude' }).press('ControlOrMeta+a');
+  await page.getByRole('textbox', { name: 'Longitude' }).fill(Updatepoi.longitude);
+  await page.getByRole('button', { name: 'Save' }).click();
+  await page.waitForTimeout(5000);
+
+    console.table([
+  {
+    Name: Updatepoi.name,
+    Address: Updatepoi.address,
+    ThirdPartyID: Updatepoi.thirdPartyId,
+    Lattitude: Updatepoi.latitude,
+    Longitude: Updatepoi.longitude
+  }
+]);
 })
