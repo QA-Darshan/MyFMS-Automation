@@ -34,8 +34,15 @@ test('test', async ({ page }) => {
   await page.getByRole('textbox', { name: 'User name' }).fill(data.username);
   await page.getByRole('textbox', { name: 'Password' }).click();
   await page.getByRole('textbox', { name: 'Password' }).fill(data.password);
-  console.log(sim, sim1, data.username, data.password)
   await page.getByRole('button', { name: 'Save' }).click();
+  console.table([
+  {
+    SIM_Number: sim,
+    Telephone_Number: sim1,
+    Username: data.username,
+    Password: data.password
+  }
+]);
   await page.waitForTimeout(5000);
 
   await page.getByRole('link', { name: 'devices Devices' }).click();
@@ -48,9 +55,13 @@ test('test', async ({ page }) => {
   await page.getByText('M7', { exact: true }).click();
   await page.getByRole('textbox', { name: 'IMEI Number' }).click();
   await page.getByRole('textbox', { name: 'IMEI Number' }).fill(IMEI);
-  await page.waitForTimeout(5000);
+  await page.waitForTimeout(2000);
   await page.getByRole('button', { name: 'Save' }).click();
-  console.log(IMEI)
+    console.table([
+  {
+      IMEI: IMEI
+  }
+]);
   await page.getByRole('textbox', { name: 'Search...' }).click();
   await page.getByRole('textbox', { name: 'Search...' }).fill(IMEI);
 
@@ -68,7 +79,7 @@ test('test', async ({ page }) => {
 
   await page.getByRole('textbox', { name: 'Search...' }).click();
   await page.getByRole('textbox', { name: 'Search...' }).fill(sim);
-  await page.waitForTimeout(5000);
+  await page.waitForTimeout(2000);
   await page.getByText(sim).click();
-  await page.waitForTimeout(5000);
+  await page.waitForTimeout(7000);
 });
