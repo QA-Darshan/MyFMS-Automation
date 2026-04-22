@@ -125,3 +125,31 @@ export const generateIMEI = (): string => {
   for (let i = b.length - 1; i >= 0; i--) { let n = +b[i]; if (d) { n *= 2; if (n > 9) n -= 9; } s += n; d ^= 1; }
   return b + ((10 - s % 10) % 10);
 };
+
+export function generatePOIGroupData() {
+  return {
+    title: faker.company.name(),                     // realistic group name
+    description: faker.lorem.sentence(),             // readable description
+    thirdPartyId: faker.string.alphanumeric(10),     // unique external ID
+  };
+}
+
+// export function POIData(): string {
+//   const latitude = faker.location.latitude({ min: -90, max: 90, precision: 6 });
+//   const longitude = faker.location.longitude({ min: -180, max: 180, precision: 6 });
+//   const address = faker.location.streetAddress({ useFullAddress: true });
+//   const Name = faker.string.alphanumeric(6);
+//   return Name;
+// }
+
+export function generatePOIData() {
+  const [lat, lng] = faker.location.nearbyGPSCoordinate();
+
+  return {
+    name: faker.string.alphanumeric(6),
+    address: faker.location.streetAddress().replace(/\n/g, ', '),
+    latitude: lat.toFixed(6),
+    longitude: lng.toFixed(6),
+    thirdPartyId: faker.string.alphanumeric(8)
+  };
+}
