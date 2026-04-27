@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, Page } from '@playwright/test';
 import { login } from './login';
 import { generateCostCenterData } from './testdata';
 import { table } from 'node:console';
@@ -21,7 +21,8 @@ test('test', async ({ page }) => {
   await page.getByRole('textbox', { name: 'Title' }).press('Tab');
   await page.getByRole('textbox', { name: 'Description' }).fill(data.description);
   await page.getByRole('button', { name: 'Save' }).click();
-    console.table([
+  const addGroupSuccessMessage = await expectSuccessMessage(page, 'add user group', /success|saved|created/i);
+  console.table([
   {
     Title: data.title,
     Description: data.description,
@@ -71,6 +72,8 @@ test('test', async ({ page }) => {
   await page.getByRole('textbox', { name: 'Search...' }).click();
   await page.getByRole('textbox', { name: 'Search...' }).fill(data.code);
   await page.getByText(data.code).click();
+
+  //Edit Cost Center
   await expect(page.getByRole('complementary', { name: 'Edit Cost Center' })).toBeVisible();
 
   await page.getByRole('textbox', { name: 'Code' }).click();
@@ -80,6 +83,8 @@ test('test', async ({ page }) => {
   await page.getByRole('textbox', { name: 'Name' }).press('ControlOrMeta+a');
   await page.getByRole('textbox', { name: 'Name' }).fill(edit.name);
   await page.getByRole('button', { name: 'Save' }).click();
+  const EditSuccess = await expect(page.getByText('Cost center is updated successfully.')).toBeVisible();
+  console.log(EditSuccess);
       console.table([
   {
     Code: edit.code,
@@ -94,8 +99,6 @@ test('test', async ({ page }) => {
   await page.getByRole('button', { name: 'Delete', exact: true }).click();
   await page.locator('.rz-chkbox-box').click();
   await page.waitForTimeout(5000);
-  // await expect(page.locator(`tr:has-text("${edit.code}")`)).toBeVisible();
-  // await page.waitForTimeout(5000);
 
   //Delete Cost Center Group with Replacement
   await page.getByLabel(edit.title).getByRole('button', { name: 'more_vert' }).click();
@@ -110,3 +113,7 @@ test('test', async ({ page }) => {
   await page.getByRole('button', { name: 'Delete', exact: true}).click();
   await page.waitForTimeout(15000)
 });
+
+function expectSuccessMessage(page: Page, arg1: string, arg2: RegExp) {
+  throw new Error('Function not implemented.');
+}
