@@ -120,6 +120,7 @@ await page.waitForTimeout(5000);
   await page.getByRole('textbox', { name: 'Third-party ID' }).click();
   await page.getByRole('textbox', { name: 'Address' }).press('ControlOrMeta+a');
   await page.getByRole('textbox', { name: 'Third-party ID' }).fill(Updatepoi.thirdPartyId);
+  await page.waitForTimeout(5000)
   await page.getByRole('button', { name: 'refresh' }).click();
 //  await expect(page.getByRole('textbox', { name: 'Radius' })).toBeVisible();
 
