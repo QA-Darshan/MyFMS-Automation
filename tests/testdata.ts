@@ -134,14 +134,6 @@ export function generatePOIGroupData() {
   };
 }
 
-// export function POIData(): string {
-//   const latitude = faker.location.latitude({ min: -90, max: 90, precision: 6 });
-//   const longitude = faker.location.longitude({ min: -180, max: 180, precision: 6 });
-//   const address = faker.location.streetAddress({ useFullAddress: true });
-//   const Name = faker.string.alphanumeric(6);
-//   return Name;
-// }
-
 export function generatePOIData() {
   const [lat, lng] = faker.location.nearbyGPSCoordinate();
 
@@ -153,3 +145,10 @@ export function generatePOIData() {
     thirdPartyId: faker.string.alphanumeric(8)
   };
 }
+
+export const generateCostCenterData = () => ({
+  title: faker.lorem.words(3),
+  description: faker.lorem.sentence(),
+  code: `${Math.floor(Math.random() * 1000000)}`,
+  name: faker.string.alphanumeric(6),
+});
