@@ -269,6 +269,7 @@ test('Enable Recovery Action', async ({ page }) => {
 
   await page.getByText('Email Email Url Banner Alert').click();
   await expect(page.getByRole('option', { name: 'Email' })).toBeVisible();
+  await page.waitForTimeout(8000);
   await page.getByText('Enable Recovery').click();
   await page.getByRole('button', { name: 'Save' }).click();
 
