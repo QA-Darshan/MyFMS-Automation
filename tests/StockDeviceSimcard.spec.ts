@@ -79,7 +79,7 @@ test('test', async ({ page }) => {
 
   await page.getByRole('textbox', { name: 'Search...' }).click();
   await page.getByRole('textbox', { name: 'Search...' }).fill(sim);
-  await page.waitForTimeout(2000);
+  await page.waitForTimeout(5000);
   await page.getByText(sim).click();
   await page.waitForTimeout(7000);
 });
