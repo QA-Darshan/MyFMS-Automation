@@ -152,3 +152,8 @@ export const generateCostCenterData = () => ({
   code: `${Math.floor(Math.random() * 1000000)}`,
   name: faker.string.alphanumeric(6),
 });
+
+
+export const generateassetpooldata = () => ({
+  title: faker.lorem.words(2),
+})
