@@ -9,12 +9,16 @@ export function generateUserName() {
     employeeNumber: `EMP${Math.floor(Math.random() * 1000000)}`,
     phoneNumber: Math.floor(1000000000 + Math.random() * 9000000000).toString(),
     billingcode: `Billingcode${Math.floor(Math.random() * 1000000)}`,
+    function: faker.string.alpha({ length: 8, casing: 'lower' }),
+    comment: faker.lorem.sentence()
   };
 }
 
 export function generateAddress() {
   const timestamp = Date.now();
     return {
+    title: faker.lorem.words(1),
+    description: faker.lorem.sentence(),
     street: `Main Street`,
     number: Math.floor(Math.random() * 200) + 1,
     postalCode: Math.floor(100000 + Math.random() * 900000).toString(),
@@ -26,9 +30,11 @@ export function generateAddress() {
 
 export function generateRFIDData() {
   return {
-    generateRFID: `RFID${faker.string.alphanumeric(8).toUpperCase()}`,
-    generateAlias: faker.person.firstName(),
-    generateThirdpartyID: `TPID${faker.string.alphanumeric(10).toUpperCase()}`
+    title: faker.lorem.words(1),
+    description: faker.lorem.sentence(),
+    Identificationcode: `RFID${faker.string.alphanumeric(8).toUpperCase()}`,
+    Alias: faker.person.firstName(),
+    ThirdpartyID: `TPID${faker.string.alphanumeric(10).toUpperCase()}`
   };
 }
 
@@ -157,3 +163,32 @@ export const generateCostCenterData = () => ({
 export const generateassetpooldata = () => ({
   title: faker.lorem.words(2),
 })
+
+export const generateNoticeData = () => ({
+  dutch: {
+    title: `Dutch ${faker.lorem.words(2)}`,
+    message: faker.lorem.sentence(),
+  },
+  english: {
+    title: `English ${faker.lorem.words(2)}`,
+    message: faker.lorem.sentence(),
+  },
+  german: {
+    title: `German ${faker.lorem.words(2)}`,
+    message: faker.lorem.sentence(),
+  },
+});
+
+type Coordinate = {
+    lat: number;
+    lng: number;
+};
+
+export function formatCoords(coords: Coordinate[]): string {
+    return coords.map(c => `${c.lat};${c.lng}`).join('|');
+}
+
+export const generateActivityTypeData = () => ({
+  name: faker.string.alphanumeric(8),
+  description: faker.lorem.sentence()
+});
