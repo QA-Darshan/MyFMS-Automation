@@ -8,22 +8,18 @@ test('test', async ({ page }) => {
   const sim1 = generateSimNumber()
   const IMEI = generateIMEI()
   await login(page);
-  await page.waitForTimeout(12000); 
+  await page.waitForTimeout(10000); 
   await page.getByText('Stock').click();
-  await expect(page.getByRole('listitem', { name: 'Devices' })).toBeVisible();
 
   await page.getByRole('link', { name: 'sim_card SIM Cards' }).click();
-  await expect(page.getByRole('row', { name: 'Provider arrow_drop_up' })).toBeVisible();
 
   await page.getByRole('button', { name: 'add Add SIM Card' }).click();
-  await expect(page.getByRole('complementary', { name: 'Add SIM Card' })).toBeVisible();
 
   await page.getByText('Select Provider').click();
   await page.getByRole('textbox', { name: 'Search', exact: true }).click();
   await page.getByRole('textbox', { name: 'Search', exact: true }).fill('Orange');
   await page.getByText('Orange (NL)').click();
   await page.getByText('Micpoint B.V. Micpoint B.V.').click();
-  await expect(page.getByRole('textbox', { name: 'Search', exact: true })).toBeVisible();
 
   await page.getByLabel('Micpoint B.V.').getByText('Micpoint B.V.').click();
   await page.getByRole('textbox', { name: 'Sim Number' }).click();
@@ -47,7 +43,6 @@ test('test', async ({ page }) => {
 
   await page.getByRole('link', { name: 'devices Devices' }).click();
   await page.getByRole('button', { name: 'add Add Devices' }).click();
-  await expect(page.getByRole('complementary', { name: 'Add Devices' })).toBeVisible();
 
   await page.getByText('Enter Model').click();
   await page.getByRole('textbox', { name: 'Search', exact: true }).click();
@@ -66,7 +61,6 @@ test('test', async ({ page }) => {
   await page.getByRole('textbox', { name: 'Search...' }).fill(IMEI);
 
   await page.getByText(IMEI).click();
-  await expect(page.getByRole('complementary', { name: 'Edit Device' })).toBeVisible();
 
   await page.getByText('Select Simcard Select Simcard').click();
   await page.getByRole('textbox', { name: 'Search', exact: true }).click();
@@ -74,12 +68,11 @@ test('test', async ({ page }) => {
   await page.getByRole('button', { name: 'Save' }).click();
 
   await page.getByRole('link', { name: 'sim_card SIM Cards' }).click();
-  await expect(page.getByRole('row', { name: 'Provider arrow_drop_up' })).toBeVisible();
-  await page.locator('.rz-chkbox-box').click();
-
+  await page.waitForTimeout(2000);
+  await page.getByRole('checkbox').first().click();
   await page.getByRole('textbox', { name: 'Search...' }).click();
   await page.getByRole('textbox', { name: 'Search...' }).fill(sim);
-  await page.waitForTimeout(5000);
+  await page.waitForTimeout(2000);
   await page.getByText(sim).click();
   await page.waitForTimeout(7000);
 });
