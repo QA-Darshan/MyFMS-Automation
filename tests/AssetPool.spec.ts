@@ -167,4 +167,4 @@ test('Asset Pool and Car Sharing', async ({ page }) => {
     Message: DeleteAssetPoolGroupmessage
   },
 ])
-  });
+});
