@@ -13,6 +13,12 @@ test('Users Management', async ({ page }) => {
   await page.getByTestId('sidebar-parent-menu-admin').click();
 
   await page.getByTestId('sidebar-admin-child-menu-users').click();
+  
+  const url = page.url();
+
+  console.table([
+  { Page: 'User Page', URL: url }
+]);
 
   //Add User Group
   await page.getByTestId('user-group-list-add-button-1').click();
@@ -115,9 +121,8 @@ await page
   await page.getByTestId('user-header-search-input').fill(Updateduserdata.firstName);
   
   await page.getByTestId('user-grid-delete-button-1').click();
-  // await expect(page.getByRole('dialog', { name: 'Confirm deletion' })).toBeVisible();
 
-  await page.getByRole('button', { name: 'Delete', exact: true }).click();
+  await page.locator('[role="dialog"]').locator('button.rz-primary').click(); 
   await page.waitForTimeout(3000);
   
   const DeletetUser = page.locator('[role="alert"], .alert, .rz-notification').first(); // ensure single element
@@ -142,8 +147,7 @@ await page
   await expect(deletegroup).toBeVisible();
   await deletegroup.locator('button').click();
 
-  await deletegroup
-  .locator('[data-testid^="user-group-list-delete-menuitem"]').click();
+  await deletegroup.locator('[data-testid^="user-group-list-delete-menuitem"]').click();
   
   await page.getByTestId('user-group-delete-replacement-dropdown').click();
   await page.locator('span').filter({ hasText: /^Algemeen$/ }).click();
