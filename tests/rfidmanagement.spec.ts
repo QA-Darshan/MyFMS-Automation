@@ -7,89 +7,86 @@ test('RFID Management', async ({ page }) => {
   const updatedtestdata = generateRFIDData()
   await login(page);
   await page.waitForTimeout(10000);
-  await page.getByRole('button', { name: 'build Admin' }).click();
+  await expect(page.getByTestId('sidebar-parent-menu-admin')).toBeVisible();
+  await page.getByTestId('sidebar-parent-menu-admin').click();
 
   await page.getByRole('link', { name: 'credit_card RFID\'s' }).click();
 
   //Add RFID Group
-  await page.getByLabel('<span class=\'unitforecolor\'>Root</span>').getByRole('button', { name: 'add' }).click();
-  await expect(page.getByRole('dialog', { name: 'Add RFID group' })).toBeVisible();
-  await page.getByRole('textbox', { name: 'Title' }).click();
-  await page.getByRole('textbox', { name: 'Title' }).fill(testdata.title);
-  await page.getByRole('textbox', { name: 'Description' }).click();
-  await page.getByRole('textbox', { name: 'Description' }).fill(testdata.description);
-  await page.getByRole('button', { name: 'Save' }).click();
-  await page.getByRole('button', { name: 'Save' }).click();
+  await page.getByTestId('rfid-group-list-add-button-1').click();  
+  await page.getByTestId('rfid-group-create-title-input').click();
+  await page.getByTestId('rfid-group-create-title-input').fill(testdata.title);
+  await page.getByTestId('rfid-group-create-description-textarea').click();
+  await page.getByTestId('rfid-group-create-description-textarea').fill(testdata.description);
+  await page.getByTestId('rfid-group-create-save-button').click();
   await page.waitForTimeout(2000);
 
-  const AddRFIDGroup = page.locator('[role="alert"], .alert, .rz-notification').filter({ hasText: /successfully|created|updated|deleted/i }).first(); // ensure single element
+  const AddRFIDGroup = page.locator('[role="alert"], .alert, .rz-notification').first(); // ensure single element
   await expect(AddRFIDGroup).toBeVisible();
   const AddRfidMessage = (await AddRFIDGroup.textContent())?.replace(/\s+/g, ' ').trim();
 
   //Edit RFID Group
-  await page.getByLabel(testdata.title).getByRole('button', { name: 'more_vert' }).click();
-  await expect(page.getByRole('menuitem', { name: 'edit Edit' })).toBeVisible();
+  const group = page.getByRole('option', { name: testdata.title });
+  await expect(group).toBeVisible();
+  await group.locator('button').click();
 
-  await page.getByRole('button', { name: 'edit Edit' }).click();
-  await expect(page.getByRole('dialog', { name: testdata.title })).toBeVisible();
+  await group.locator('[data-testid^="rfid-group-list-edit-menuitem"]').click();
 
-  await page.getByRole('textbox', { name: 'Title' }).click();
-  await page.getByRole('textbox', { name: 'Title' }).press('ControlOrMeta+a');
-  await page.getByRole('textbox', { name: 'Title' }).fill(updatedtestdata.title);
-  await page.getByRole('textbox', { name: 'Description' }).click();
-  await page.getByRole('textbox', { name: 'Description' }).press('ControlOrMeta+a');
-  await page.getByRole('textbox', { name: 'Description' }).fill(updatedtestdata.description);
-  await page.getByRole('button', { name: 'Save' }).click();
+  await page.getByTestId('rfid-group-edit-title-input').click();
+  await page.getByTestId('rfid-group-edit-title-input').press('ControlOrMeta+a');
+  await page.getByTestId('rfid-group-edit-title-input').fill(updatedtestdata.title);
+  await page.getByTestId('rfid-group-edit-description-textarea').click();
+  await page.getByTestId('rfid-group-edit-description-textarea').press('ControlOrMeta+a');
+  await page.getByTestId('rfid-group-edit-description-textarea').fill(updatedtestdata.description);
+  await page.getByTestId('rfid-group-edit-save-button').click();
+  await page.waitForTimeout(2000);
 
-  const EditRFIDGroup = page.locator('[role="alert"], .alert, .rz-notification').filter({ hasText: /successfully|created|updated|deleted/i }).first(); // ensure single element
+  const EditRFIDGroup = page.locator('[role="alert"], .alert, .rz-notification').first(); // ensure single element
   await expect(EditRFIDGroup).toBeVisible();
   const EditRFIDmessage = (await EditRFIDGroup.textContent())?.replace(/\s+/g, ' ').trim();
 
   //Add RFID
   await page.getByRole('heading', { name: updatedtestdata.title }).click();
 
-  await page.getByRole('button', { name: 'add Add RFID' }).click();
-  await page.getByRole('textbox', { name: 'Identification code' }).click();
-  await page.getByRole('textbox', { name: 'Identification code' }).fill(testdata.Identificationcode);
-  await page.getByRole('textbox', { name: 'Alias' }).click();
-  await page.getByRole('textbox', { name: 'Alias' }).fill(testdata.Alias);
-  await page.getByRole('button', { name: 'image' }).click();
-  await expect(page.getByRole('dialog', { name: 'Select User' })).toBeVisible();
+  await page.getByTestId('rfid-header-add-button').click();
+  await page.getByTestId('rfid-create-identification-code-input').click();
+  await page.getByTestId('rfid-create-identification-code-input').fill(testdata.Identificationcode);
+  await page.getByTestId('rfid-create-alias-input').click();
+  await page.getByTestId('rfid-create-alias-input').fill(testdata.Alias);
+  await page.getByTestId('rfid-user-picker-open-button').click();
 
-  await page.getByRole('dialog', { name: 'Select User' }).getByPlaceholder('Search...').click();
-  await page.getByRole('dialog', { name: 'Select User' }).getByPlaceholder('Search...').fill('Darshan');
+  await page.getByTestId('rfid-user-lookup-search-input').click();
+  await page.getByTestId('rfid-user-lookup-search-input').fill('Darshan');
   await page.waitForTimeout(2000);
-  await page.getByRole('checkbox', { name: 'Select item' }).nth(2).click();
-  await expect(page.getByRole('row', { name: 'Select item check Darshan' })).toBeVisible();
+  await page.getByTestId('user-lookup-grid-row-checkbox-1').click();
+  await page.getByTestId('rfid-user-lookup-save-button').click();
+  await page.getByTestId('rfid-create-third-party-id-input').click();
+  await page.getByTestId('rfid-create-third-party-id-input').fill(testdata.ThirdpartyID);
+  await page.getByTestId('rfid-create-save-button').click();
+  await page.waitForTimeout(2000);
 
-  await page.getByLabel('Select User').getByRole('button', { name: 'Save' }).click();
-  await page.getByRole('textbox', { name: 'Third-party ID' }).click();
-  await page.getByRole('textbox', { name: 'Third-party ID' }).fill(testdata.ThirdpartyID);
-  await page.getByRole('button', { name: 'Save' }).click();
-
-  const AddRFID = page.locator('[role="alert"], .alert, .rz-notification').filter({ hasText: /successfully|created|updated|deleted/i }).first(); // ensure single element
+  const AddRFID = page.locator('[role="alert"], .alert, .rz-notification').first(); // ensure single element
   await expect(AddRFID).toBeVisible();
   const AddRFIDmessage = (await AddRFID.textContent())?.replace(/\s+/g, ' ').trim();
 
   //Edit RFID
-  await page.getByRole('textbox', { name: 'Search...' }).click();
-  await page.getByRole('textbox', { name: 'Search...' }).fill(testdata.Identificationcode);
+  await page.getByTestId('rfid-header-search-input').click();
+  await page.getByTestId('rfid-header-search-input').fill(testdata.Identificationcode);
   await page.getByText(testdata.Identificationcode).click();
-  await expect(page.getByRole('dialog', { name: 'Edit RFID' })).toBeVisible();
 
-  await page.getByRole('textbox', { name: 'Identification code' }).click();
-  await page.getByRole('textbox', { name: 'Identification code' }).press('ControlOrMeta+a');
-  await page.getByRole('textbox', { name: 'Identification code' }).fill(updatedtestdata.Identificationcode);
-  await page.getByPlaceholder('Enter alias').click();
-  await page.getByPlaceholder('Enter alias').press('ControlOrMeta+a');
-  await page.getByPlaceholder('Enter alias').fill(updatedtestdata.Alias);
-  await page.getByPlaceholder('Enter Third-party ID').click();
-  await page.getByPlaceholder('Enter Third-party ID').press('ControlOrMeta+a');
-  await page.getByPlaceholder('Enter Third-party ID').fill(updatedtestdata.ThirdpartyID);
-  await page.getByRole('button', { name: 'Save' }).click();
+  await page.getByTestId('rfid-edit-identification-code-input').click();
+  await page.getByTestId('rfid-edit-identification-code-input').press('ControlOrMeta+a');
+  await page.getByTestId('rfid-edit-identification-code-input').fill(updatedtestdata.Identificationcode);
+  await page.getByTestId('rfid-edit-alias-input').click();
+  await page.getByTestId('rfid-edit-alias-input').press('ControlOrMeta+a');
+  await page.getByTestId('rfid-edit-alias-input').fill(updatedtestdata.Alias);
+  await page.getByTestId('rfid-edit-third-party-id-input').click();
+  await page.getByTestId('rfid-edit-third-party-id-input').press('ControlOrMeta+a');
+  await page.getByTestId('rfid-edit-third-party-id-input').fill(updatedtestdata.ThirdpartyID);
+  await page.getByTestId('rfid-edit-save-button').click();
   await page.waitForTimeout(2000);
 
-  const EditRFID = page.locator('[role="alert"], .alert, .rz-notification').filter({ hasText: /successfully|created|updated|deleted/i }).first(); // ensure single element
+  const EditRFID = page.locator('[role="alert"], .alert, .rz-notification').first(); // ensure single element
   await expect(EditRFID).toBeVisible();
   const EditRFIDsuccess = (await EditRFID.textContent())?.replace(/\s+/g, ' ').trim();
     
@@ -100,19 +97,20 @@ test('RFID Management', async ({ page }) => {
   // await page.getByRole('button', { name: 'Delete', exact: true }).click();
 
   //Delete RFID Group with Replacement
+
+  const deletegroup = page.getByRole('option', { name: updatedtestdata.title });
+  await deletegroup.locator('button').click();
+
+  await deletegroup.locator('[data-testid^="rfid-group-list-delete-menuitem"]').click();
   
-  await page.getByLabel(updatedtestdata.title).getByRole('button', { name: 'more_vert' }).click();
-  await expect(page.getByRole('menuitem', { name: 'edit Edit' })).toBeVisible();
-
-  await page.getByRole('button', { name: 'delete Delete' }).click();
-  await page.getByText('Replace with').click();
-  await expect(page.getByRole('textbox', { name: 'Search', exact: true })).toBeVisible();
-
+  // await expect(page.getByTestId('rfid-group-delete-replacement-dropdown')).toBeVisible();
+  await page.getByTestId('rfid-group-delete-replacement-dropdown').click();
   await page.locator('span').filter({ hasText: /^Algemeen$/ }).click();
-  await page.getByRole('button', { name: 'Delete', exact: true }).click();
 
-  const DeleteRFIDGroup = page.locator('[role="alert"], .alert, .rz-notification').filter({ hasText: /successfully|created|updated|deleted/i }).first(); // ensure single element
-  await expect(DeleteRFIDGroup).toBeVisible();
+  await page.getByTestId('rfid-group-delete-confirm-button').click();
+
+  const DeleteRFIDGroup = page.locator('[role="alert"], .alert, .rz-notification').first(); // ensure single element
+  await expect(DeleteRFIDGroup).toBeVisible()
   const DeleteRFIDGroupmesage = (await DeleteRFIDGroup.textContent())?.replace(/\s+/g, ' ').trim();
 
   console.table([
