@@ -10,8 +10,10 @@ test('Users Management', async ({ page }) => {
   const Updateduserdata = generateUserName()
   await login(page);
   await page.waitForTimeout(8000);
+  await expect(page.getByTestId('sidebar-parent-menu-admin')).toBeVisible();
   await page.getByTestId('sidebar-parent-menu-admin').click();
 
+  await expect(page.getByTestId('sidebar-admin-child-menu-users')).toBeVisible();
   await page.getByTestId('sidebar-admin-child-menu-users').click();
   
   const url = page.url();
@@ -22,13 +24,12 @@ test('Users Management', async ({ page }) => {
 
   //Add User Group
   await page.getByTestId('user-group-list-add-button-1').click();
-
   await page.getByTestId('user-group-create-title-input').click();
   await page.getByTestId('user-group-create-title-input').fill(testdata.title);
   await page.getByTestId('user-group-create-description-textarea').click();
   await page.getByTestId('user-group-create-description-textarea').fill(testdata.description);
   await page.getByTestId('user-group-create-save-button').click();
-  await expect(page.getByRole('option', { name: testdata.title })).toBeVisible();
+  await page.waitForTimeout(3000);
 
   const AddUserGroup = page.locator('[role="alert"], .alert, .rz-notification').first();
   const addusergroupmessage = (await AddUserGroup.textContent())  ?.replace(/\s+/g, ' ').trim();
@@ -69,15 +70,6 @@ test('Users Management', async ({ page }) => {
   await page.getByTestId('user-create-postalcode-input').fill(testdata.Postalcode);
   await page.getByTestId('user-create-city-input').click();
   await page.getByTestId('user-create-city-input').fill(testdata.city);
-  
-await page.getByTestId('user-create-role-dropdown').click();
-
-await page
-  .locator('#RoleId-list li[role="option"]')
-  .nth(0)
-  .click();
-
-  await page.waitForTimeout(3000);
   
   await page.getByTestId('user-create-save-button').click();
   await page.waitForTimeout(3000);

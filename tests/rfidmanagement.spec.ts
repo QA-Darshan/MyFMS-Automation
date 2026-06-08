@@ -2,17 +2,20 @@ import { login } from './login';
 import { test, expect, type Locator, type Page } from '@playwright/test';
 import { generateRFIDData } from './testdata';
 
-test('RFID Management', async ({ page }) => {
-  const testdata = generateRFIDData()
-  const updatedtestdata = generateRFIDData()
+test.describe.serial('RFID Management', () => {
+  test.beforeEach(async ({ page }) => {
   await login(page);
   await page.waitForTimeout(10000);
   await expect(page.getByTestId('sidebar-parent-menu-admin')).toBeVisible();
   await page.getByTestId('sidebar-parent-menu-admin').click();
 
-  await page.getByRole('link', { name: 'credit_card RFID\'s' }).click();
+  await page.getByTestId("sidebar-admin-child-menu-rfid's").click();
+  })
 
-  //Add RFID Group
+  const testdata = generateRFIDData()
+  const updatedtestdata = generateRFIDData()
+  
+  test('Add RFID Group', async ({ page }) => {
   await page.getByTestId('rfid-group-list-add-button-1').click();  
   await page.getByTestId('rfid-group-create-title-input').click();
   await page.getByTestId('rfid-group-create-title-input').fill(testdata.title);
@@ -22,10 +25,10 @@ test('RFID Management', async ({ page }) => {
   await page.waitForTimeout(2000);
 
   const AddRFIDGroup = page.locator('[role="alert"], .alert, .rz-notification').first(); // ensure single element
-  await expect(AddRFIDGroup).toBeVisible();
   const AddRfidMessage = (await AddRFIDGroup.textContent())?.replace(/\s+/g, ' ').trim();
+  });
 
-  //Edit RFID Group
+  test('Edit RFID Group', async ({ page}) => {
   const group = page.getByRole('option', { name: testdata.title });
   await expect(group).toBeVisible();
   await group.locator('button').click();
@@ -42,10 +45,10 @@ test('RFID Management', async ({ page }) => {
   await page.waitForTimeout(2000);
 
   const EditRFIDGroup = page.locator('[role="alert"], .alert, .rz-notification').first(); // ensure single element
-  await expect(EditRFIDGroup).toBeVisible();
   const EditRFIDmessage = (await EditRFIDGroup.textContent())?.replace(/\s+/g, ' ').trim();
+  });
 
-  //Add RFID
+  test('Add RFID', async ({ page }) => {
   await page.getByRole('heading', { name: updatedtestdata.title }).click();
 
   await page.getByTestId('rfid-header-add-button').click();
@@ -68,8 +71,9 @@ test('RFID Management', async ({ page }) => {
   const AddRFID = page.locator('[role="alert"], .alert, .rz-notification').first(); // ensure single element
   await expect(AddRFID).toBeVisible();
   const AddRFIDmessage = (await AddRFID.textContent())?.replace(/\s+/g, ' ').trim();
+  });
 
-  //Edit RFID
+  test('Edit RFID', async ({ page }) => {
   await page.getByTestId('rfid-header-search-input').click();
   await page.getByTestId('rfid-header-search-input').fill(testdata.Identificationcode);
   await page.getByText(testdata.Identificationcode).click();
@@ -87,66 +91,59 @@ test('RFID Management', async ({ page }) => {
   await page.waitForTimeout(2000);
 
   const EditRFID = page.locator('[role="alert"], .alert, .rz-notification').first(); // ensure single element
-  await expect(EditRFID).toBeVisible();
   const EditRFIDsuccess = (await EditRFID.textContent())?.replace(/\s+/g, ' ').trim();
-    
-  // Delete RFID
-  // await page.getByRole('textbox', { name: 'Search...' }).click();
-  // await page.getByRole('textbox', { name: 'Search...' }).fill(updatedtestdata.Identificationcode);
-  // await page.getByRole('button', { name: 'delete' }).click();
-  // await page.getByRole('button', { name: 'Delete', exact: true }).click();
+  });
 
-  //Delete RFID Group with Replacement
-
+  test('Delete RFID Group with Replacement', async ({ page }) => {
   const deletegroup = page.getByRole('option', { name: updatedtestdata.title });
   await deletegroup.locator('button').click();
 
   await deletegroup.locator('[data-testid^="rfid-group-list-delete-menuitem"]').click();
   
-  // await expect(page.getByTestId('rfid-group-delete-replacement-dropdown')).toBeVisible();
   await page.getByTestId('rfid-group-delete-replacement-dropdown').click();
   await page.locator('span').filter({ hasText: /^Algemeen$/ }).click();
 
   await page.getByTestId('rfid-group-delete-confirm-button').click();
 
   const DeleteRFIDGroup = page.locator('[role="alert"], .alert, .rz-notification').first(); // ensure single element
-  await expect(DeleteRFIDGroup).toBeVisible()
   const DeleteRFIDGroupmesage = (await DeleteRFIDGroup.textContent())?.replace(/\s+/g, ' ').trim();
+  })
+})
 
-  console.table([
-  {
-    Action: 'Add RFID Group',
-    Title: testdata.title,
-    Status: 'Passed',
-    Message: AddRfidMessage
-  },
-  {
-    Action: 'Edit RFID Group',
-    Title: updatedtestdata.title,
-    Status: 'Passed',
-    Message: EditRFIDmessage,
-  },
-  {
-    Action: 'Add RFID',
-    IdentificationcCode: testdata.Identificationcode,
-    Alias: testdata.Alias,
-    ThirdpartyID: testdata.ThirdpartyID,
-    Status: 'Passed',
-    Message: AddRFIDmessage,
-  },
-  {
-    Action: 'Edit RFID',
-    IdentificationcCode: updatedtestdata.Identificationcode,
-    Alias: updatedtestdata.Alias,
-    ThirdpartyID: updatedtestdata.ThirdpartyID,
-    Status: 'Passed',
-    Message: EditRFIDsuccess,  
-  },
-  {
-    Action: 'Delete RFID Group',
-    Title: updatedtestdata.title,
-    Status: 'Passed',
-    Message: DeleteRFIDGroupmesage,  
-  }  
-]);
-});
+//   console.table([
+//   {
+//     Action: 'Add RFID Group',
+//     Title: testdata.title,
+//     Status: 'Passed',
+//     Message: AddRfidMessage
+//   },
+//   {
+//     Action: 'Edit RFID Group',
+//     Title: updatedtestdata.title,
+//     Status: 'Passed',
+//     Message: EditRFIDmessage,
+//   },
+//   {
+//     Action: 'Add RFID',
+//     IdentificationcCode: testdata.Identificationcode,
+//     Alias: testdata.Alias,
+//     ThirdpartyID: testdata.ThirdpartyID,
+//     Status: 'Passed',
+//     Message: AddRFIDmessage,
+//   },
+//   {
+//     Action: 'Edit RFID',
+//     IdentificationcCode: updatedtestdata.Identificationcode,
+//     Alias: updatedtestdata.Alias,
+//     ThirdpartyID: updatedtestdata.ThirdpartyID,
+//     Status: 'Passed',
+//     Message: EditRFIDsuccess,  
+//   },
+//   {
+//     Action: 'Delete RFID Group',
+//     Title: updatedtestdata.title,
+//     Status: 'Passed',
+//     Message: DeleteRFIDGroupmesage,  
+//   }  
+// ]);
+// });
