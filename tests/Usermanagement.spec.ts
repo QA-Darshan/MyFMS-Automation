@@ -2,39 +2,38 @@ import { login } from './login';
 import { test, expect } from '@playwright/test';
 import {generateAddress, generateUserName} from './testdata';
 
-test('Users Management', async ({ page }) => {
-  const reportTable: any[] = [];
-  const testdata = generateAddress()
-  const updatedtestdata = generateAddress()
+test.describe.serial('Users Management', () => {
+  test.beforeEach(async ({ page }) => {
+    await login(page);
+    await page.waitForTimeout(10000);
+    await expect(page.getByTestId('sidebar-parent-menu-admin')).toBeVisible();
+    await page.getByTestId('sidebar-parent-menu-admin').click();
+    
+    await expect(page.getByTestId('sidebar-admin-child-menu-users')).toBeVisible();
+    await page.getByTestId('sidebar-admin-child-menu-users').click();
+  });
+
+  const testdata = generateAddress();
   const Userdata = generateUserName();
   const Updateduserdata = generateUserName()
-  await login(page);
-  await page.waitForTimeout(8000);
-  await expect(page.getByTestId('sidebar-parent-menu-admin')).toBeVisible();
-  await page.getByTestId('sidebar-parent-menu-admin').click();
+  const Updatedtestdata = generateAddress()
 
-  await expect(page.getByTestId('sidebar-admin-child-menu-users')).toBeVisible();
-  await page.getByTestId('sidebar-admin-child-menu-users').click();
-  
-  const url = page.url();
+  test('Add User Group', async ({ page }) => {
 
-  console.table([
-  { Page: 'User Page', URL: url }
-]);
+    await page.getByTestId('user-group-list-add-button-1').click();
+    await page.getByTestId('user-group-create-title-input').fill(testdata.title);
+    await page.getByTestId('user-group-create-description-textarea').fill(testdata.description);
+    await page.getByTestId('user-group-create-save-button').click();
+    await page.waitForTimeout(3000);
 
-  //Add User Group
-  await page.getByTestId('user-group-list-add-button-1').click();
-  await page.getByTestId('user-group-create-title-input').click();
-  await page.getByTestId('user-group-create-title-input').fill(testdata.title);
-  await page.getByTestId('user-group-create-description-textarea').click();
-  await page.getByTestId('user-group-create-description-textarea').fill(testdata.description);
-  await page.getByTestId('user-group-create-save-button').click();
-  await page.waitForTimeout(3000);
+    const AddUserGroup = page.locator('[role="alert"], .alert, .rz-notification').first();
+    const addusergroupmessage = (await AddUserGroup.textContent())  ?.replace(/\s+/g, ' ').trim();
 
-  const AddUserGroup = page.locator('[role="alert"], .alert, .rz-notification').first();
-  const addusergroupmessage = (await AddUserGroup.textContent())  ?.replace(/\s+/g, ' ').trim();
+  });
 
-  //Edit User Group
+  test('Edit User Group', async ({ page }) => {
+
+    // Pre-create group
   const group = page.getByRole('option', { name: testdata.title });
   await expect(group).toBeVisible();
   await group.locator('button').click();
@@ -45,19 +44,19 @@ test('Users Management', async ({ page }) => {
 
   await page.getByTestId('user-group-edit-title-input').click();
   await page.getByTestId('user-group-edit-title-input').press('ControlOrMeta+a');
-  await page.getByTestId('user-group-edit-title-input').fill(updatedtestdata.title);
+  await page.getByTestId('user-group-edit-title-input').fill(Updatedtestdata.title);
   await page.getByTestId('user-group-edit-description-textarea').click();
   await page.getByTestId('user-group-edit-description-textarea').press('ControlOrMeta+a');
-  await page.getByTestId('user-group-edit-description-textarea').fill(updatedtestdata.description);
+  await page.getByTestId('user-group-edit-description-textarea').fill(Updatedtestdata.description);
   await page.getByTestId('user-group-edit-save-button').click();
   await page.waitForTimeout(3000);
 
   const EditUserGroup = page.locator('[role="alert"], .alert, .rz-notification').first(); // ensure single element
   const editusergroupmessage = (await EditUserGroup.textContent())  ?.replace(/\s+/g, ' ').trim();
+  });
 
-  await page.getByRole('heading', { name: updatedtestdata.title }).click();
-
-  //Add User
+  test('Add User', async ({ page }) => {
+  await page.getByRole('heading', { name: Updatedtestdata.title }).click();
   await page.getByTestId('user-header-add-button').click();
   await page.getByTestId('user-create-firstname-input').fill(Userdata.firstName);
   await page.getByTestId('user-create-middlename-input').fill(Userdata.middleName);
@@ -73,16 +72,19 @@ test('Users Management', async ({ page }) => {
   
   await page.getByTestId('user-create-save-button').click();
   await page.waitForTimeout(3000);
-  
+
   const AddUser = page.locator('[role="alert"], .alert, .rz-notification').first(); // ensure single element
   const AddUsermessage = (await AddUser.textContent())  ?.replace(/\s+/g, ' ').trim();
 
-  //Edit User
+  });
 
+  test('Edit User', async ({ page }) => {
+
+    // Create user first
   await page.getByTestId('user-header-search-input').click();
   await page.getByTestId('user-header-search-input').fill(Userdata.firstName);
  
-  await page.getByText(Userdata.firstName).click();
+  await page.getByText(Userdata.email).click();
 
   await page.getByTestId('user-edit-firstname-input').click();
   await page.getByTestId('user-edit-firstname-input').press('ControlOrMeta+a');
@@ -107,23 +109,26 @@ test('Users Management', async ({ page }) => {
 
   const EditUser = page.locator('[role="alert"], .alert, .rz-notification').first(); // ensure single element
   const message1 = (await EditUser.textContent()) ?.replace(/\s+/g, ' ').trim();
+  });
 
-  //Delete User
+  test('Delete User', async ({ page }) => {
   await page.getByTestId('user-header-search-input').click();
-  await page.getByTestId('user-header-search-input').fill(Updateduserdata.firstName);
-  
+  await page.getByTestId('user-header-search-input').fill(Updateduserdata.email);
+  await page.waitForTimeout(3000);  
   await page.getByTestId('user-grid-delete-button-1').click();
 
   await page.locator('[role="dialog"]').locator('button.rz-primary').click(); 
+  const DeleteUser = page.locator('[role="alert"], .alert, .rz-notification').first(); // ensure single element
+  const message1 = (await DeleteUser.textContent()) ?.replace(/\s+/g, ' ').trim();
   await page.waitForTimeout(3000);
-  
-  const DeletetUser = page.locator('[role="alert"], .alert, .rz-notification').first(); // ensure single element
-  const DeletetUsermessage = (await DeletetUser.textContent()) ?.replace(/\s+/g, ' ').trim();
+  });
 
-  //Reactivate User
+  test('Reactivate User', async ({ page }) => {
+
+    // Create & delete user
   await page.getByTestId('user-header-inactive-checkbox').click();
   await page.getByTestId('user-header-search-input').click();
-  await page.getByTestId('user-header-search-input').fill(Updateduserdata.firstName);
+  await page.getByTestId('user-header-search-input').fill(Updateduserdata.email);
   await page.getByText(Updateduserdata.email).click();
 
   await page.getByTestId('user-edit-reactivate-button').click();
@@ -131,11 +136,10 @@ test('Users Management', async ({ page }) => {
 
   const ReactivatetUser = page.locator('[role="alert"], .alert, .rz-notification').first(); // ensure single element
   const ReactivateUsermessage = (await ReactivatetUser.textContent()) ?.replace(/\s+/g, ' ').trim();
+  })
 
-
-  //Delete User Group with Replacement
-  
-  const deletegroup = page.getByRole('option', { name: updatedtestdata.title });
+  test('Delete User Group with Replacement', async ({ page }) => {
+  const deletegroup = page.getByRole('option', { name: Updatedtestdata.title });
   await expect(deletegroup).toBeVisible();
   await deletegroup.locator('button').click();
 
@@ -148,58 +152,6 @@ test('Users Management', async ({ page }) => {
   await page.getByTestId('user-group-delete-confirm-button').click()
 
   const DeleteUserGroup = page.locator('[role="alert"], .alert, .rz-notification').first(); // ensure single element
-  await expect(DeleteUserGroup).toBeVisible();
   const Deletegroupmessage = (await DeleteUserGroup.textContent())?.replace(/\s+/g, ' ').trim();
-
-  // Report Table
-    reportTable.push({
-    Type: 'Add User Grpup',
-    Title: testdata.title,
-    Message: addusergroupmessage
-    });
-
-    reportTable.push({
-    Type: 'Edit User Grpup',
-    Title: updatedtestdata.title,
-    Message: editusergroupmessage
-    });
-  
-  reportTable.push({
-    Type: 'Add User',
-    FirstName: Userdata.firstName,
-    MiddleName: Userdata.middleName,
-    LastName: Userdata.lastName,
-    Message: AddUsermessage
+  })
   });
-
-  reportTable.push({
-    Type: 'Update User',
-    FirstName: Updateduserdata.firstName,
-    MiddleName: Updateduserdata.middleName,
-    LastName: Updateduserdata.lastName,
-    Message: message1
-  });
-
-  reportTable.push({
-    Type: 'Delete User',
-    FirstName: Updateduserdata.firstName,
-    MiddleName: Updateduserdata.middleName,
-    LastName: Updateduserdata.lastName,
-    Message: DeletetUsermessage
-  });
-
-  reportTable.push({
-    Type: 'Reactivated User',
-    FirstName: Updateduserdata.firstName,
-    MiddleName: Updateduserdata.middleName,
-    LastName: Updateduserdata.lastName,
-    Message: ReactivateUsermessage
-  });
-
-    reportTable.push({
-    Type: 'Delete User Group',
-    Title: updatedtestdata.title,
-    Message: Deletegroupmessage
-  });
-  console.table(reportTable);
-});
