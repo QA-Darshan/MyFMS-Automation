@@ -164,31 +164,23 @@ export const generateassetpooldata = () => ({
   title: faker.lorem.words(2),
 })
 
-export const generateNoticeData = () => ({
-  dutch: {
-    title: `Dutch ${faker.lorem.words(2)}`,
-    message: faker.lorem.sentence(),
-  },
-  english: {
-    title: `English ${faker.lorem.words(2)}`,
-    message: faker.lorem.sentence(),
-  },
-  german: {
-    title: `German ${faker.lorem.words(2)}`,
-    message: faker.lorem.sentence(),
-  },
-});
-
 type Coordinate = {
     lat: number;
     lng: number;
 };
 
-export function formatCoords(coords: Coordinate[]): string {
-    return coords.map(c => `${c.lat};${c.lng}`).join('|');
+export function formatCoords(coords: Coordinate[], language: 'English' | 'Dutch' = 'English'): string {
+  const closed = [...coords, coords[0]];
+  const decimalSeparator = language === 'Dutch' ? ',' : '.';
+
+  return closed
+    .map(c => `${String(c.lat).replace('.', decimalSeparator)};${String(c.lng).replace('.', decimalSeparator)}`)
+    .join('|');
 }
 
-export const generateActivityTypeData = () => ({
-  name: faker.string.alphanumeric(8),
-  description: faker.lorem.sentence()
-});
+export const generateActivityTypeData = () => {
+  return {
+    name: `${faker.word.noun()}`,
+    description: faker.lorem.sentence()
+  };
+};
